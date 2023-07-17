@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.created_at }}</p>
+    <p>{{ post.content }}</p>
+
+    <h3>태그</h3>
+    <div>
+      {% for tag in tags %}
+        {{ tag.content }}
+      {% endfor %}
+    </div>
+
+    <h3>댓글</h3>
+    <div>
+      {% for comment in comments %}
+        <p>{{ comment.content }}</p>
+      {% endfor %}
+    </div>
+  </body>
+
+</html>
