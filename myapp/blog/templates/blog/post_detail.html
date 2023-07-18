@@ -1,3 +1,4 @@
+{% load base64_to_image %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +11,7 @@
   <body>
     <h2>{{ post.title }}</h2>
     <p>{{ post.created_at }}</p>
-    <p>{{ post.content }}</p>
+    <p>{{ post.content|base64_to_image }}</p>
     <form action="{% url 'blog:delete' pk=post.pk %}" method="post">
       {% csrf_token %}
       <input type="submit" value="삭제">

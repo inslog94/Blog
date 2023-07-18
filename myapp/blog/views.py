@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Post, Tag, Comment
+from .forms import PostForm
 
 
 class Index(View):
@@ -62,3 +63,31 @@ class PostDelete(View):
         post.save()
         
         return redirect('blog:list')
+    
+    
+class PostWrite(View):
+    def get(self, req):
+        form = PostForm()
+        context = {
+            'form': form
+        }
+        
+        return render(req, "blog/post_form.html", context)
+    
+    def post(self, req):
+        form = PostForm(req.POST)
+        print("form 데이터", form)
+        if form.is_valid():
+            # post = form.save()
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            
+            post = Post(title=title, content=content)
+            post.save()
+            
+            print(title, content)
+            # title = form.cleaned_data['title']
+            # content = form.cleaned_data['content']
+            # print(title, content, form)
+            
+            return redirect('blog:list')
