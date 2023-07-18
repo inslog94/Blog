@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from .models import Post, Tag, Comment
 
@@ -49,3 +49,12 @@ class Search(View):
         }
         
         return render(req, 'blog/post_search.html', context)
+    
+    
+class PostDelete(View):
+    def post(self, req, pk):
+        post = Post.objects.get(pk=pk)
+        print("delete", post)
+        post.delete()
+        
+        return redirect('blog:list')
