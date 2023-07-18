@@ -1,4 +1,4 @@
-{% load base64_to_image %}
+{% load base64_to_img %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +12,9 @@
     <h2>{{ post.title }}</h2>
     <p>{{ post.created_at }}</p>
     <p>{{ post.content|base64_to_image }}</p>
+    <a href="{% url 'blog:edit' pk=post.pk %}">
+      <button>수정</button>
+    </a>
     <form action="{% url 'blog:delete' pk=post.pk %}" method="post">
       {% csrf_token %}
       <input type="submit" value="삭제">

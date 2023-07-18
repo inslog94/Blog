@@ -91,3 +91,26 @@ class PostWrite(View):
             # print(title, content, form)
             
             return redirect('blog:list')
+        
+
+class PostUpdate(View):
+    def get(self, req, pk):
+        post = Post.objects.get(pk=pk)
+        form = PostForm(initial={'title': post.title, 'content': post.content})
+        context = {
+            'content': post.content,
+            'form': form,
+            'post': post,
+        }
+        
+        return render(req, 'blog/post_edit.html', context)
+    
+    def post(self, req, pk):
+        post = Post.objects.get(pk=pk)
+        form = PostForm(req.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data['title']
+            post.content = form.cleaned_data['content']
+            post.save()
+            
+            return redirect('blog:detail', pk=pk)

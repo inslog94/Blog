@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  </head>
+
+  <body>
+    <form action="{% url 'blog:edit' pk=post.pk %}" method="post">
+      {% csrf_token %}
+      <div>
+        <!-- <label for="{{ form.title.id_for_label }}">Title:</label> -->
+        {{ form.title }}
+      </div>
+      <div>
+        <!-- <label for="{{ form.content.id_for_label }}">Content:</label> -->
+        <div id="content"></div>
+        <input type="hidden" name="{{ form.content.html_name }}" id="{{ form.content.auto_id }}" value="{{ form.content.value }}">
+      </div>
+      <input type="submit" value="완료">
+    </form>
+    <script>
+      const Editor = toastui.Editor;
+      const editor = new Editor({
+        el: document.querySelector('#content'),
+        height: '500px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        events: {
+          change: function () {
+            const value = editor.getHTML();
+            document
+              .querySelector("#{{ form.content.auto_id }}")
+              .value = value;
+          }
+        }
+      });
+
+      const initialContent = "{{ content|escapejs }}";
+      editor.setMarkdown(initialContent);
+
+      // editor.getHTML()
+      // editor.getMarkdown()
+    </script>
+  </body>
+
+</html>
