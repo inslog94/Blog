@@ -24,13 +24,15 @@
         </tr>
         {% if posts %}
           {% for post in posts %}
-            <tr>
-              <td>
-                <a href="{% url 'blog:detail' pk=post.pk %}">{{ post.title }}</a>
-              </td>
-              <td>익명</td>
-              <td>{{ post.created_at }}</td>
-            </tr>
+            {% if not post.is_deleted %}
+              <tr>
+                <td>
+                  <a href="{% url 'blog:detail' pk=post.pk %}">{{ post.title }}</a>
+                </td>
+                <td>익명</td>
+                <td>{{ post.created_at }}</td>
+              </tr>
+            {% endif %}
           {% endfor %}
         {% endif %}
       </table>

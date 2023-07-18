@@ -21,6 +21,9 @@ class PostDetail(View):
         post = Post.objects.prefetch_related('comment_set', 'tag_set').get(pk=pk)
         print(post)
         
+        if post.is_deleted:
+            return render(req, "blog/post_deleted.html")
+        
         # comments = Comment.objects.select_related('post').filter(post=post)
         comments = post.comment_set.all()
         print('comments', comments)
@@ -55,6 +58,7 @@ class PostDelete(View):
     def post(self, req, pk):
         post = Post.objects.get(pk=pk)
         print("delete", post)
-        post.delete()
+        post.is_deleted = True
+        post.save()
         
         return redirect('blog:list')
