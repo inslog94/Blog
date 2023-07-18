@@ -32,8 +32,12 @@
               <td>{{ post.created_at }}</td>
             </tr>
           {% endfor %}
-        </table>
-      {% endif %}
+        {% endif %}
+      </table>
+      <form action="/blog/search/" method="get">
+        <input type="text" name="name" placeholder="검색어를 입력해주세요.">
+        <input type="submit" value="검색">
+      </form>
     </body>
 
   </html>

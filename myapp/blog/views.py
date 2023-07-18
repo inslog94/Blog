@@ -35,3 +35,17 @@ class PostDetail(View):
         }
         
         return render(req, "blog/post_detail.html", context)
+    
+    
+class Search(View):
+    def get(self, req):
+        query = req.GET.get('name')
+        print(query)
+        posts = Post.objects.filter(title__contains=query)
+        print(posts)
+        context = {
+            "query": query,
+            "posts": posts
+        }
+        
+        return render(req, 'blog/post_search.html', context)
