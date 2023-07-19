@@ -41,6 +41,27 @@
         <input type="submit" value="검색">
       </form>
       <a href="{% url 'blog:write' %}"><button>글쓰기</button></a>
+      <div>
+        <ul>
+          {% if tags %}
+            {% for tag in tags %}
+              <a href="" class='tagSearch'><li>{{ tag }}</li></a>
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+      <script>
+        $tags= document.querySelectorAll('.tagSearch');
+        $tags.forEach((tag) => {
+          tag.addEventListener('click', (event) => tagSearch(event, tag));
+        });
+
+        function tagSearch(event, tag) {
+          event.preventDefault()
+          const url = "{% url 'blog:tag-search' %}?name=" + tag.textContent
+          window.location.href = url;
+        }
+      </script>
     </body>
 
   </html>

@@ -7,9 +7,11 @@ from .forms import PostForm, TagForm
 class Index(View):
     def get(self, req):
         posts = Post.objects.all()
+        tags = Tag.objects.all()
         print(posts)
         context = {
             "posts": posts,
+            "tags": tags,
         }
         
         return render(req, "blog/post_list.html", context)
@@ -54,6 +56,21 @@ class Search(View):
         
         return render(req, 'blog/post_search.html', context)
     
+
+class TagSearch(View):
+    def get(self, req):
+        query = req.GET.get('name')
+        print(query)
+        tag = Tag.objects.get(content=query)
+        posts = tag.post_set.all()
+        print(posts)
+        context = {
+            "query": query,
+            "posts": posts
+        }
+        
+        return render(req, 'blog/post_search.html', context)
+
     
 class PostDelete(View):
     def post(self, req, pk):
