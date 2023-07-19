@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Post, Tag, Comment
-from .forms import PostForm, TagForm
+from .forms import PostForm, TagForm, CommentForm
 
 
 class Index(View):
@@ -31,18 +31,21 @@ class PostDetail(View):
         comments = post.comment_set.all()
         print('comments', comments)
         
+        comment_form = CommentForm()
+        
         # tags = Tag.objects.select_related('post').filter(post__pk=pk)
         tags = post.tags.all()
         print("tags", tags)
         context = {
             "post": post,
+            "tags": tags,
             "comments": comments,
-            "tags": tags
+            "comment_form": comment_form,
         }
         
         return render(req, "blog/post_detail.html", context)
-    
-    
+
+
 class Search(View):
     def get(self, req):
         query = req.GET.get('name')
@@ -168,3 +171,14 @@ class PostUpdate(View):
                 post.tags.set(tags)
         
             return redirect('blog:list')
+
+
+class CommentWrite(View):
+    def post(self, req, pk):
+        post = Post.objects.get(pk=pk)
+        form = CommentForm(req.POST)
+        if form.is_valid():
+           content = form.cleaned_data['content']
+           comment = Comment.objects.create(post=post, content=content)
+           
+           return redirect('blog:detail', pk=pk)

@@ -18,3 +18,10 @@ class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ['content']
+
+
+class CommentForm(forms.ModelForm):
+    
+    class Meta:
+        model = Comment
+        fields = ['content']

@@ -29,8 +29,15 @@
 
     <h3>댓글</h3>
     <div>
+      <form action="{% url 'blog:cm-write' pk=post.pk %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.content }}
+        <input type="submit" value="등록">
+      </form>
       {% for comment in comments %}
-        <p>{{ comment.content }}</p>
+        <p>{{ comment.content }}
+          -
+          {{ comment.created_at }}</p>
       {% endfor %}
     </div>
   </body>
