@@ -182,3 +182,12 @@ class CommentWrite(View):
            comment = Comment.objects.create(post=post, content=content)
            
            return redirect('blog:detail', pk=pk)
+
+
+class CommentDelete(View):
+    def post(self, req, pk):
+        comment = Comment.objects.get(pk=pk)
+        post_id = comment.post.id
+        comment.delete()
+        
+        return redirect('blog:detail', pk=post_id)

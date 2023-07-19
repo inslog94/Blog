@@ -38,6 +38,10 @@
         <p>{{ comment.content }}
           -
           {{ comment.created_at }}</p>
+        <form action="{% url 'blog:cm-delete' pk=comment.pk %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="x">
+        </form>
       {% endfor %}
     </div>
   </body>
