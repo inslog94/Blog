@@ -19,7 +19,7 @@ class PostDetail(View):
     def get(self, req, pk):
         # post = Post.objects.get(pk=pk)
         # print(post)
-        post = Post.objects.prefetch_related('comment_set', 'tag_set').get(pk=pk)
+        post = Post.objects.prefetch_related('comment_set').get(pk=pk)
         print(post)
         
         if post.is_deleted:
@@ -30,7 +30,7 @@ class PostDetail(View):
         print('comments', comments)
         
         # tags = Tag.objects.select_related('post').filter(post__pk=pk)
-        tags = post.tag_set.all()
+        tags = post.tags.all()
         print("tags", tags)
         context = {
             "post": post,
@@ -96,10 +96,13 @@ class PostWrite(View):
             post.save()
             
             form_content = tag_form.cleaned_data['content'].split(",")
+            tags = []
             if tag_form:
                 print(form_content)
                 for i in form_content:
-                    tag = Tag.objects.create(post=post, content=i)
+                    tag, created = Tag.objects.get_or_create(content=i)
+                    tags.append(tag)
+                post.tags.set(tags)
         
             return redirect('blog:list')
 
