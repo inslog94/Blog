@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Post, Tag, Comment
-from .forms import PostForm
+from .forms import PostForm, TagForm
 
 
 class Index(View):
@@ -68,30 +68,41 @@ class PostDelete(View):
 class PostWrite(View):
     def get(self, req):
         form = PostForm()
+        tagForm = TagForm()
         context = {
-            'form': form
+            'form': form,
+            'tagForm': tagForm
         }
         
         return render(req, "blog/post_form.html", context)
     
     def post(self, req):
-        form = PostForm(req.POST)
-        print("form 데이터", form)
-        if form.is_valid():
-            # post = form.save()
+        post_form_data = {
+            "title": req.POST.get("title"),
+            "content": req.POST.get("content"),
+        }
+        
+        form = PostForm(data=post_form_data)
+        
+        tag_form_data = {
+            "content": req.POST.get("tags")
+        }
+        tag_form = TagForm(data=tag_form_data)
+
+        if form.is_valid() and tag_form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            
             post = Post(title=title, content=content)
             post.save()
             
-            print(title, content)
-            # title = form.cleaned_data['title']
-            # content = form.cleaned_data['content']
-            # print(title, content, form)
-            
-            return redirect('blog:list')
+            form_content = tag_form.cleaned_data['content'].split(",")
+            if tag_form:
+                print(form_content)
+                for i in form_content:
+                    tag = Tag.objects.create(post=post, content=i)
         
+            return redirect('blog:list')
+
 
 class PostUpdate(View):
     def get(self, req, pk):
