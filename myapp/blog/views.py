@@ -128,20 +128,43 @@ class PostUpdate(View):
     def get(self, req, pk):
         post = Post.objects.get(pk=pk)
         form = PostForm(initial={'title': post.title, 'content': post.content})
+        tags = post.tags.all()
         context = {
             'content': post.content,
             'form': form,
             'post': post,
+            'tags': tags,
         }
         
         return render(req, 'blog/post_edit.html', context)
     
     def post(self, req, pk):
         post = Post.objects.get(pk=pk)
-        form = PostForm(req.POST)
-        if form.is_valid():
+        post_form_data = {
+            "title": req.POST.get("title"),
+            "content": req.POST.get("content"),
+        }
+        
+        form = PostForm(data=post_form_data)
+        
+        tag_form_data = {
+            "content": req.POST.get("tags")
+        }
+        
+        print(req.POST.get("tags"))
+        tag_form = TagForm(data=tag_form_data)
+        if form.is_valid() and tag_form.is_valid():
             post.title = form.cleaned_data['title']
             post.content = form.cleaned_data['content']
             post.save()
             
-            return redirect('blog:detail', pk=pk)
+            form_content = tag_form.cleaned_data['content'].split(",")
+            tags = []
+            if tag_form:
+                print(form_content)
+                for i in form_content:
+                    tag, created = Tag.objects.get_or_create(content=i)
+                    tags.append(tag)
+                post.tags.set(tags)
+        
+            return redirect('blog:list')

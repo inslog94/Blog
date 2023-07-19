@@ -19,8 +19,15 @@
       <div>
         <!-- <label for="{{ form.content.id_for_label }}">Content:</label> -->
         <div id="content"></div>
-        <input type="hidden" name="{{ form.content.html_name }}" id="{{ form.content.auto_id }}" value="{{ form.content.value }}">
       </div>
+      <input type="hidden" name="{{ form.content.html_name }}" id="{{ form.content.auto_id }}" value="{{ form.content.value }}">
+      <div>
+        {% comment %} {{ tagForm.content }} {% endcomment %}
+        <input type="text" class="tagInput">
+        <button type="button" class="addTagBtn">추가</button>
+        <ul id="tagList"></ul>
+      </div>
+      <input type="hidden" name="tags" id="tagsInput" value="">
       <input type="submit" value="완료">
     </form>
     <script>
@@ -43,6 +50,62 @@
       const initialContent = "{{ content|escapejs }}";
       editor.setMarkdown(initialContent);
 
+      const tagInput = document.querySelector('.tagInput');
+      const addTagBtn = document.querySelector('.addTagBtn');
+      const tagList = document.querySelector('#tagList');
+      const tagsInput = document.querySelector('#tagsInput');
+      const tags = [];
+
+      const initialTags = ("{{ tags|escapejs }}".replace('QuerySet ', '').replaceAll(/<|>|Tag: |/g, '')).slice(1, -1).split(', ')
+      initialTags.forEach((initialTag) => addTag(initialTag))
+
+      tagInput.addEventListener('keydown', enterHandler)
+      addTagBtn.addEventListener('click', addTag);
+
+      function enterHandler(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          addTag()
+        }
+      }
+
+      function addTag(initialTag=null) {
+        let tag = null
+        if (initialTag !== null) {
+          tag = initialTag
+         } else {
+          tag = tagInput
+            .value
+            .trim();
+         }
+
+        if (tag) {
+          tags.push(tag);
+          const listItem = document.createElement('li');
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'x';
+
+          deleteBtn.addEventListener('click', () => {
+            const index = tags.indexOf(tag);
+            if (index > -1) {
+              tags.splice(index, 1);
+            }
+            tagList.removeChild(listItem);
+            updateTagsInputValue();
+          });
+
+          listItem.textContent = tag;
+          listItem.appendChild(deleteBtn);
+          tagList.appendChild(listItem);
+          tagInput.value = '';
+
+          updateTagsInputValue();
+        }
+      }
+
+      function updateTagsInputValue() {
+        tagsInput.value = tags.join(',');
+      }
       // editor.getHTML()
       // editor.getMarkdown()
     </script>

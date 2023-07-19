@@ -25,11 +25,7 @@
         {% comment %} {{ tagForm.content }} {% endcomment %}
         <input type="text" class="tagInput">
         <button type="button" class="addTagBtn">추가</button>
-        <ul id="tagList">
-          {% for tag in tags %}
-            <li>{{ tag }}</li>
-          {% endfor %}
-        </ul>
+        <ul id="tagList"></ul>
       </div>
       <input type="hidden" name="tags" id="tagsInput" value="">
       <input type="submit" value="완료">
