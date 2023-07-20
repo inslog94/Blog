@@ -180,10 +180,17 @@ class CommentWrite(View):
         post = Post.objects.get(pk=pk)
         form = CommentForm(req.POST)
         if form.is_valid():
-           content = form.cleaned_data['content']
-           comment = Comment.objects.create(post=post, content=content)
-           
-           return redirect('blog:detail', pk=pk)
+            content = form.cleaned_data['content']
+            writer = req.user
+            print("댓글 작성자", writer)
+
+            if not req.user.is_authenticated:
+                print("익명입니다")
+                comment = Comment.objects.create(post=post, content=content, writer=None)
+            else:
+                comment = Comment.objects.create(post=post, content=content, writer=writer)
+
+            return redirect('blog:detail', pk=pk)
 
 
 class CommentDelete(View):
