@@ -108,8 +108,8 @@ class PostWrite(LoginRequiredMixin, View):
         tag_form_data = {
             "content": req.POST.get("tags")
         }
+        
         tag_form = TagForm(data=tag_form_data)
-
         if form.is_valid() and tag_form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
@@ -117,14 +117,16 @@ class PostWrite(LoginRequiredMixin, View):
             post = Post(title=title, content=content, writer=writer)
             post.save()
             
-            form_content = tag_form.cleaned_data['content'].split(",")
+            form_content = tag_form.cleaned_data['content']
             tags = []
-            if tag_form:
-                print(form_content)
-                for i in form_content:
-                    tag, created = Tag.objects.get_or_create(content=i)
-                    tags.append(tag)
-                post.tags.set(tags)
+            if form_content:
+                form_content = form_content.split(",")
+                if tag_form:
+                    print(form_content)
+                    for i in form_content:
+                        tag, created = Tag.objects.get_or_create(content=i)
+                        tags.append(tag)
+            post.tags.set(tags)
         
             return redirect('blog:list')
 
@@ -163,14 +165,16 @@ class PostUpdate(LoginRequiredMixin, View):
             post.content = form.cleaned_data['content']
             post.save()
             
-            form_content = tag_form.cleaned_data['content'].split(",")
+            form_content = tag_form.cleaned_data['content']
             tags = []
-            if tag_form:
-                print(form_content)
-                for i in form_content:
-                    tag, created = Tag.objects.get_or_create(content=i)
-                    tags.append(tag)
-                post.tags.set(tags)
+            if form_content:
+                form_content = form_content.split(",")
+                if tag_form:
+                    print("clean", form_content)
+                    for i in form_content:
+                        tag, created = Tag.objects.get_or_create(content=i)
+                        tags.append(tag)
+            post.tags.set(tags)
         
             return redirect('blog:list')
 
