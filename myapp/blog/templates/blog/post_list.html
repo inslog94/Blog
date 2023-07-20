@@ -29,7 +29,7 @@
                 <td>
                   <a href="{% url 'blog:detail' pk=post.pk %}">{{ post.title }}</a>
                 </td>
-                <td>익명</td>
+                <td>{{ post.writer }}</td>
                 <td>{{ post.created_at }}</td>
               </tr>
             {% endif %}

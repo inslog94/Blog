@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
 from django.views import View
+from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Tag, Comment
 from .forms import PostForm, TagForm, CommentForm
 
@@ -75,7 +76,7 @@ class TagSearch(View):
         return render(req, 'blog/post_search.html', context)
 
     
-class PostDelete(View):
+class PostDelete(LoginRequiredMixin, View):
     def post(self, req, pk):
         post = Post.objects.get(pk=pk)
         print("delete", post)
@@ -85,7 +86,7 @@ class PostDelete(View):
         return redirect('blog:list')
     
     
-class PostWrite(View):
+class PostWrite(LoginRequiredMixin, View):
     def get(self, req):
         form = PostForm()
         tagForm = TagForm()
@@ -112,7 +113,8 @@ class PostWrite(View):
         if form.is_valid() and tag_form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            post = Post(title=title, content=content)
+            writer = req.user
+            post = Post(title=title, content=content, writer=writer)
             post.save()
             
             form_content = tag_form.cleaned_data['content'].split(",")
@@ -127,7 +129,7 @@ class PostWrite(View):
             return redirect('blog:list')
 
 
-class PostUpdate(View):
+class PostUpdate(LoginRequiredMixin, View):
     def get(self, req, pk):
         post = Post.objects.get(pk=pk)
         form = PostForm(initial={'title': post.title, 'content': post.content})
