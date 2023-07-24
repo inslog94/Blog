@@ -168,6 +168,7 @@ class PostUpdate(LoginRequiredMixin, View):
             
             form_content = tag_form.cleaned_data['content']
             tags = []
+            post.tags.all().delete()
             if form_content:
                 form_content = form_content.split(",")
                 if tag_form:
