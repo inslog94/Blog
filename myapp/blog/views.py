@@ -7,12 +7,13 @@ from .forms import PostForm, TagForm, CommentForm
 
 class Index(View):
     def get(self, req):
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by('-pk')
         tags = Tag.objects.all()
-        print(posts)
+        comments = Comment.objects.all().order_by('-pk')
         context = {
             "posts": posts,
             "tags": tags,
+            "comments": comments[:3],
         }
         
         return render(req, "blog/post_list.html", context)
