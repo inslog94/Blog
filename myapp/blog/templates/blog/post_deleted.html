@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% load static %}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-  </head>
+{% block title %}Blog - Edit{% endblock %}
+{% block extra_css %}{% endblock %}
 
-  <body>
-    <h3>존재하지 않는 게시글입니다</h3>
-  </body>
+{% block sub-title %}Deleted Post{% endblock %}
+{% block root_b %}Blog{% endblock %}
+{% block root_c %}Not Found{% endblock %}
 
-</html>
+{% block content %}
+  <div class="container">
+    <div class="d-flex board justify-content-center mt-100">
+      <h3>존재하지 않는 게시글입니다</h3>
+    </div>
+  </div>
+{% endblock %}
