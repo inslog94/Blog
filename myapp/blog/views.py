@@ -1,5 +1,5 @@
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Tag, Comment
 from .forms import PostForm, TagForm, CommentForm
@@ -23,7 +23,7 @@ class PostDetail(View):
     def get(self, req, pk):
         # post = Post.objects.get(pk=pk)
         # print(post)
-        post = Post.objects.prefetch_related('comment_set').get(pk=pk)
+        post = get_object_or_404(Post, pk=pk)
         print(post)
         
         if post.is_deleted:
